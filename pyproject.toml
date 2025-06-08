@@ -1,0 +1,19 @@
+[project]
+name = "sok-ha"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+markers = [
+    "asyncio: mark test as an asyncio coroutine",
+]
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.semantic_release]
+branch = "main"
+version_toml = ["pyproject.toml:project.version"]
+version_variables = ["custom_components/renogy/manifest.json:version"]
