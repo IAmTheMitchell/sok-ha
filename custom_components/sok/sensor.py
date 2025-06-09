@@ -19,12 +19,17 @@ from homeassistant.const import (
     PERCENTAGE,
 )
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.device_registry import (
+    CONNECTION_BLUETOOTH,
+    DeviceInfo,
+)
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from sok_ble.sok_bluetooth_device import SokBluetoothDevice
 
 from . import SOKConfigEntry
+from .const import DOMAIN
 
 
 @dataclass
@@ -109,6 +114,12 @@ class SOKSensorEntity(CoordinatorEntity[SokBluetoothDevice], SensorEntity):
         self.entity_description = description
         self._attr_unique_id = f"{coordinator.address}_{description.key}"
         self._attr_has_entity_name = True
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, coordinator.unique_id)},
+            connections={(CONNECTION_BLUETOOTH, coordinator.address)},
+            name=getattr(coordinator.entry, "title", coordinator.address),
+            manufacturer="SOK",
+        )
 
     @property
     def native_value(self) -> int | float | None:
