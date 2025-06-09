@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 from datetime import timedelta
 import asyncio
+from async_timeout import timeout
 
 from homeassistant.components.bluetooth import async_ble_device_from_address
 from homeassistant.config_entries import ConfigEntry
@@ -24,6 +25,7 @@ from .const import DOMAIN
 _LOGGER = logging.getLogger(__name__)
 
 UPDATE_INTERVAL = timedelta(minutes=3)
+REQUEST_TIMEOUT = 15
 
 
 class SOKDataUpdateCoordinator(DataUpdateCoordinator[SokBluetoothDevice]):
@@ -74,7 +76,8 @@ class SOKDataUpdateCoordinator(DataUpdateCoordinator[SokBluetoothDevice]):
                 _LOGGER.debug(
                     "Polling SOK battery %s, attempt %s", battery_name, attempt + 1
                 )
-                await device.async_update()
+                async with timeout(REQUEST_TIMEOUT):
+                    await device.async_update()
                 break
             except Exception as err:  # pragma: no cover - hardware errors
                 last_err = err
