@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.2.0 (2025-06-09)
+
+### Features
+
+- Group sensors under device
+  ([`9e4c2bf`](https://github.com/IAmTheMitchell/sok-ha/commit/9e4c2bf861689dff808d93eb5a860f0083b31ec5))
+
+
 ## v0.1.0 (2025-06-09)
 
 ### Bug Fixes
