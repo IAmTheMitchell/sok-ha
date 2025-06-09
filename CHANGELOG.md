@@ -1,6 +1,25 @@
 # CHANGELOG
 
 
+## v0.4.0 (2025-06-09)
+
+### Bug Fixes
+
+- Add retry logic for BLE updates
+  ([`895e531`](https://github.com/IAmTheMitchell/sok-ha/commit/895e5312d4cd1ca351cd20e87009606b8a6c90c0))
+
+- Handle missing coordinator data
+  ([`72195b4`](https://github.com/IAmTheMitchell/sok-ha/commit/72195b4944d1b238e3469596cf6ccdc79513bd89))
+
+### Features
+
+- Improve debug logging
+  ([`b956688`](https://github.com/IAmTheMitchell/sok-ha/commit/b9566883d88c3fb913408e1321dcd6a286ed62d6))
+
+- Improve startup reliability
+  ([`94b57bd`](https://github.com/IAmTheMitchell/sok-ha/commit/94b57bd1dedfcf309b7877e813c769aa11a43ed0))
+
+
 ## v0.3.0 (2025-06-09)
 
 ### Bug Fixes
