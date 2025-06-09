@@ -82,10 +82,12 @@ class SOKDataUpdateCoordinator(DataUpdateCoordinator[SokBluetoothDevice]):
             except Exception as err:  # pragma: no cover - hardware errors
                 last_err = err
                 _LOGGER.debug(
-                    "Error updating SOK battery %s on attempt %s: %s",
+                    "Error updating SOK battery %s on attempt %s: %s: %s",
                     battery_name,
                     attempt + 1,
+                    type(err).__name__,
                     err,
+                    exc_info=err,
                 )
                 await asyncio.sleep(1)
         if last_err and device.num_samples == 0:
