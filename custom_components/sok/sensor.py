@@ -77,6 +77,7 @@ SENSOR_DESCRIPTIONS: tuple[SokSensorEntityDescription, ...] = (
     SokSensorEntityDescription(
         key="capacity",
         name="Capacity",
+        icon="mdi:battery-high",
         native_unit_of_measurement="Ah",
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda dev: dev.capacity,
@@ -84,6 +85,7 @@ SENSOR_DESCRIPTIONS: tuple[SokSensorEntityDescription, ...] = (
     SokSensorEntityDescription(
         key="num_cycles",
         name="Charge Cycles",
+        icon="mdi:battery-sync",
         native_unit_of_measurement="cycles",
         state_class=SensorStateClass.TOTAL_INCREASING,
         value_fn=lambda dev: dev.num_cycles,
