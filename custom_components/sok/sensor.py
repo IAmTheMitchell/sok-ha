@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Callable, Any
+from typing import Callable
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -12,11 +12,11 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.const import (
-    UnitOfElectricPotential,
+    PERCENTAGE,
     UnitOfElectricCurrent,
+    UnitOfElectricPotential,
     UnitOfPower,
     UnitOfTemperature,
-    PERCENTAGE,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import (
@@ -25,7 +25,6 @@ from homeassistant.helpers.device_registry import (
 )
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-
 from sok_ble.sok_bluetooth_device import SokBluetoothDevice
 
 from . import SOKConfigEntry
@@ -42,7 +41,6 @@ class SokSensorEntityDescription(SensorEntityDescription):
 SENSOR_DESCRIPTIONS: tuple[SokSensorEntityDescription, ...] = (
     SokSensorEntityDescription(
         key="voltage",
-        translation_key="voltage",
         device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         state_class=SensorStateClass.MEASUREMENT,
@@ -50,7 +48,6 @@ SENSOR_DESCRIPTIONS: tuple[SokSensorEntityDescription, ...] = (
     ),
     SokSensorEntityDescription(
         key="current",
-        translation_key="current",
         device_class=SensorDeviceClass.CURRENT,
         native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -58,7 +55,6 @@ SENSOR_DESCRIPTIONS: tuple[SokSensorEntityDescription, ...] = (
     ),
     SokSensorEntityDescription(
         key="power",
-        translation_key="power",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
         state_class=SensorStateClass.MEASUREMENT,
@@ -66,7 +62,6 @@ SENSOR_DESCRIPTIONS: tuple[SokSensorEntityDescription, ...] = (
     ),
     SokSensorEntityDescription(
         key="soc",
-        translation_key="soc",
         device_class=SensorDeviceClass.BATTERY,
         native_unit_of_measurement=PERCENTAGE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -74,7 +69,6 @@ SENSOR_DESCRIPTIONS: tuple[SokSensorEntityDescription, ...] = (
     ),
     SokSensorEntityDescription(
         key="temperature",
-        translation_key="temperature",
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         state_class=SensorStateClass.MEASUREMENT,
@@ -82,14 +76,14 @@ SENSOR_DESCRIPTIONS: tuple[SokSensorEntityDescription, ...] = (
     ),
     SokSensorEntityDescription(
         key="capacity",
-        translation_key="capacity",
+        name="Capacity",
         native_unit_of_measurement="Ah",
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda dev: dev.capacity,
     ),
     SokSensorEntityDescription(
         key="num_cycles",
-        translation_key="num_cycles",
+        name="Charge Cycles",
         native_unit_of_measurement="cycles",
         state_class=SensorStateClass.TOTAL_INCREASING,
         value_fn=lambda dev: dev.num_cycles,
@@ -105,8 +99,7 @@ async def async_setup_entry(
     """Set up the SOK BLE sensors."""
     coordinator = entry.runtime_data
     entities: list[SOKSensorEntity] = [
-        SOKSensorEntity(coordinator, description)
-        for description in SENSOR_DESCRIPTIONS
+        SOKSensorEntity(coordinator, description) for description in SENSOR_DESCRIPTIONS
     ]
     async_add_entities(entities)
 
