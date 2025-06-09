@@ -3,13 +3,17 @@
 from __future__ import annotations
 
 from typing import Any
+import logging
 
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
 
 from .const import DOMAIN
+
+_LOGGER = logging.getLogger(__name__)
 
 from .coordinator import SOKDataUpdateCoordinator
 
@@ -21,8 +25,21 @@ PLATFORMS: list[Platform] = [Platform.SENSOR]
 async def async_setup_entry(hass: HomeAssistant, entry: SOKConfigEntry) -> bool:
     """Set up SOK BLE device from a config entry."""
     assert entry.unique_id is not None
+    battery_name = getattr(entry, "title", entry.unique_id)
+    _LOGGER.debug("Setting up SOK battery %s", battery_name)
     coordinator = SOKDataUpdateCoordinator(hass, entry)
-    await coordinator.async_config_entry_first_refresh()
+
+    async def first_refresh() -> None:
+        try:
+            await coordinator.async_config_entry_first_refresh()
+        except ConfigEntryNotReady:
+            _LOGGER.debug(
+                "Initial refresh failed for %s, continuing setup", battery_name
+            )
+            await coordinator.async_refresh()
+
+    hass.async_create_task(first_refresh())
+
     entry.runtime_data = coordinator
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
@@ -30,6 +47,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: SOKConfigEntry) -> bool:
 
 async def async_unload_entry(hass: HomeAssistant, entry: SOKConfigEntry) -> bool:
     """Unload a config entry."""
+    battery_name = getattr(entry, "title", entry.unique_id)
+    _LOGGER.debug("Unloading SOK battery %s", battery_name)
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unload_ok:
         coordinator: SOKDataUpdateCoordinator = entry.runtime_data

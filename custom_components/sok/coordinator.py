@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import logging
 from datetime import timedelta
+import asyncio
+from async_timeout import timeout
 
 from homeassistant.components.bluetooth import async_ble_device_from_address
 from homeassistant.config_entries import ConfigEntry
@@ -23,6 +25,7 @@ from .const import DOMAIN
 _LOGGER = logging.getLogger(__name__)
 
 UPDATE_INTERVAL = timedelta(minutes=3)
+REQUEST_TIMEOUT = 15
 
 
 class SOKDataUpdateCoordinator(DataUpdateCoordinator[SokBluetoothDevice]):
@@ -31,6 +34,8 @@ class SOKDataUpdateCoordinator(DataUpdateCoordinator[SokBluetoothDevice]):
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         self.entry = entry
         self.address = entry.unique_id
+        battery_name = getattr(entry, "title", entry.unique_id)
+        _LOGGER.debug("Initializing coordinator for SOK battery %s at %s", battery_name, self.address)
         super().__init__(
             hass,
             _LOGGER,
@@ -56,15 +61,36 @@ class SOKDataUpdateCoordinator(DataUpdateCoordinator[SokBluetoothDevice]):
 
     async def _async_update_data(self) -> SokBluetoothDevice:
         assert self.address is not None
+        battery_name = getattr(self.entry, "title", self.address)
+        _LOGGER.debug("Updating data for SOK battery %s", battery_name)
         ble_device = async_ble_device_from_address(
             self.hass, self.address, connectable=True
         )
         if not ble_device:
+            _LOGGER.debug("SOK battery %s (%s) not found", battery_name, self.address)
             raise UpdateFailed(f"Device {self.address} not found")
         device = SokBluetoothDevice(ble_device)
-        try:
-            await device.async_update()
-        except Exception as err:
-            raise UpdateFailed(err) from err
+        last_err: Exception | None = None
+        for attempt in range(2):
+            try:
+                _LOGGER.debug(
+                    "Polling SOK battery %s, attempt %s", battery_name, attempt + 1
+                )
+                async with timeout(REQUEST_TIMEOUT):
+                    await device.async_update()
+                break
+            except Exception as err:  # pragma: no cover - hardware errors
+                last_err = err
+                _LOGGER.debug(
+                    "Error updating SOK battery %s on attempt %s: %s",
+                    battery_name,
+                    attempt + 1,
+                    err,
+                )
+                await asyncio.sleep(1)
+        if last_err and device.num_samples == 0:
+            raise UpdateFailed(last_err) from last_err
+
         self.data = device
+        _LOGGER.debug("Finished updating SOK battery %s", battery_name)
         return device
