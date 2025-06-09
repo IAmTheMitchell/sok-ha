@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 from datetime import timedelta
+import asyncio
 
 from homeassistant.components.bluetooth import async_ble_device_from_address
 from homeassistant.config_entries import ConfigEntry
@@ -67,11 +68,26 @@ class SOKDataUpdateCoordinator(DataUpdateCoordinator[SokBluetoothDevice]):
             _LOGGER.debug("SOK battery %s (%s) not found", battery_name, self.address)
             raise UpdateFailed(f"Device {self.address} not found")
         device = SokBluetoothDevice(ble_device)
-        try:
-            await device.async_update()
-        except Exception as err:
-            _LOGGER.debug("Error updating SOK battery %s: %s", battery_name, err)
-            raise UpdateFailed(err) from err
+        last_err: Exception | None = None
+        for attempt in range(2):
+            try:
+                _LOGGER.debug(
+                    "Polling SOK battery %s, attempt %s", battery_name, attempt + 1
+                )
+                await device.async_update()
+                break
+            except Exception as err:  # pragma: no cover - hardware errors
+                last_err = err
+                _LOGGER.debug(
+                    "Error updating SOK battery %s on attempt %s: %s",
+                    battery_name,
+                    attempt + 1,
+                    err,
+                )
+                await asyncio.sleep(1)
+        if last_err and device.num_samples == 0:
+            raise UpdateFailed(last_err) from last_err
+
         self.data = device
         _LOGGER.debug("Finished updating SOK battery %s", battery_name)
         return device
