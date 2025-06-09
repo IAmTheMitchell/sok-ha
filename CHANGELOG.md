@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.4.1 (2025-06-09)
+
+### Bug Fixes
+
+- Log exception type and stacktrace on update failure
+  ([`d8f99ba`](https://github.com/IAmTheMitchell/sok-ha/commit/d8f99ba685de79e7ea3ed3dce5d756f32e70488c))
+
+
 ## v0.4.0 (2025-06-09)
 
 ### Bug Fixes
