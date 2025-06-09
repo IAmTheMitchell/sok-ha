@@ -25,6 +25,21 @@
   },
   "entity": {
     "sensor": {
+      "voltage": {
+        "name": "Voltage"
+      },
+      "current": {
+        "name": "Current"
+      },
+      "power": {
+        "name": "Power"
+      },
+      "soc": {
+        "name": "State of Charge"
+      },
+      "temperature": {
+        "name": "Temperature"
+      },
       "num_cycles": {
         "name": "Charge Cycles"
       },
