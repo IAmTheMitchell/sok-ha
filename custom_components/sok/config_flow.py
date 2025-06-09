@@ -5,10 +5,14 @@ from __future__ import annotations
 from typing import Any
 
 import voluptuous as vol
-from homeassistant.components.bluetooth import (
-    BluetoothServiceInfoBleak,
-    async_discovered_service_info,
-)
+from homeassistant.components.bluetooth import BluetoothServiceInfoBleak
+
+try:  # Home Assistant 2025.3+
+    from homeassistant.components.bluetooth import async_discovered_service_info
+    _ASYNC_DISCOVERY = "service_info"
+except ImportError:  # pragma: no cover - older Home Assistant versions
+    from homeassistant.components.bluetooth import async_scanner_devices_by_address
+    _ASYNC_DISCOVERY = "device"
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.const import CONF_ADDRESS
 
@@ -71,7 +75,11 @@ class SOKConfigFlow(ConfigFlow, domain=DOMAIN):
             return self.async_create_entry(title=title, data={})
 
         current_addresses = self._async_current_ids(include_ignore=False)
-        for discovery_info in async_discovered_service_info(self.hass, False):
+        if _ASYNC_DISCOVERY == "service_info":
+            discoveries = async_discovered_service_info(self.hass, False)
+        else:
+            discoveries = async_scanner_devices_by_address(self.hass).values()
+        for discovery_info in discoveries:
             address = discovery_info.address
             if address in current_addresses or address in self._discovered_devices:
                 continue
