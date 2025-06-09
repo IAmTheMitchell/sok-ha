@@ -1,13 +1,10 @@
-"""Support for sok ble sensors."""
+"""Support for SOK BLE sensors."""
 
 from __future__ import annotations
 
-from homeassistant.components.bluetooth.passive_update_processor import (
-    PassiveBluetoothDataProcessor,
-    PassiveBluetoothDataUpdate,
-    PassiveBluetoothEntityKey,
-    PassiveBluetoothProcessorEntity,
-)
+from dataclasses import dataclass
+from typing import Callable, Any
+
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
@@ -15,95 +12,77 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.const import (
-    CONCENTRATION_PARTS_PER_MILLION,
-    PERCENTAGE,
-    SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
-    UnitOfPressure,
+    UnitOfElectricPotential,
+    UnitOfElectricCurrent,
+    UnitOfPower,
     UnitOfTemperature,
+    PERCENTAGE,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
-from homeassistant.helpers.sensor import sensor_device_info_to_hass_device_info
-from sok_ble import DeviceClass, DeviceKey, SensorUpdate, Units
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
+
+from sok_ble.sok_bluetooth_device import SokBluetoothDevice
 
 from . import SOKConfigEntry
 
-SENSOR_DESCRIPTIONS = {
-    (DeviceClass.TEMPERATURE, Units.TEMP_CELSIUS): SensorEntityDescription(
-        key=f"{DeviceClass.TEMPERATURE}_{Units.TEMP_CELSIUS}",
-        device_class=SensorDeviceClass.TEMPERATURE,
-        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+
+@dataclass
+class SokSensorEntityDescription(SensorEntityDescription):
+    """Describe a SOK sensor."""
+
+    value_fn: Callable[[SokBluetoothDevice], int | float | None] | None = None
+
+
+SENSOR_DESCRIPTIONS: tuple[SokSensorEntityDescription, ...] = (
+    SokSensorEntityDescription(
+        key="voltage",
+        device_class=SensorDeviceClass.VOLTAGE,
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda dev: dev.voltage,
     ),
-    (DeviceClass.HUMIDITY, Units.PERCENTAGE): SensorEntityDescription(
-        key=f"{DeviceClass.HUMIDITY}_{Units.PERCENTAGE}",
-        device_class=SensorDeviceClass.HUMIDITY,
-        native_unit_of_measurement=PERCENTAGE,
+    SokSensorEntityDescription(
+        key="current",
+        device_class=SensorDeviceClass.CURRENT,
+        native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
         state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda dev: dev.current,
     ),
-    (DeviceClass.BATTERY, Units.PERCENTAGE): SensorEntityDescription(
-        key=f"{DeviceClass.BATTERY}_{Units.PERCENTAGE}",
+    SokSensorEntityDescription(
+        key="power",
+        device_class=SensorDeviceClass.POWER,
+        native_unit_of_measurement=UnitOfPower.WATT,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda dev: dev.power,
+    ),
+    SokSensorEntityDescription(
+        key="soc",
         device_class=SensorDeviceClass.BATTERY,
         native_unit_of_measurement=PERCENTAGE,
         state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda dev: dev.soc,
     ),
-    (
-        DeviceClass.SIGNAL_STRENGTH,
-        Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
-    ): SensorEntityDescription(
-        key=f"{DeviceClass.SIGNAL_STRENGTH}_{Units.SIGNAL_STRENGTH_DECIBELS_MILLIWATT}",
-        device_class=SensorDeviceClass.SIGNAL_STRENGTH,
-        native_unit_of_measurement=SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+    SokSensorEntityDescription(
+        key="temperature",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         state_class=SensorStateClass.MEASUREMENT,
-        entity_registry_enabled_default=False,
+        value_fn=lambda dev: dev.temperature,
     ),
-    (DeviceClass.CO2, Units.CONCENTRATION_PARTS_PER_MILLION): SensorEntityDescription(
-        key=f"{DeviceClass.CO2}_{Units.CONCENTRATION_PARTS_PER_MILLION}",
-        device_class=SensorDeviceClass.CO2,
-        native_unit_of_measurement=CONCENTRATION_PARTS_PER_MILLION,
+    SokSensorEntityDescription(
+        key="capacity",
+        native_unit_of_measurement="Ah",
         state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda dev: dev.capacity,
     ),
-    (DeviceClass.PRESSURE, Units.PRESSURE_HPA): SensorEntityDescription(
-        key=f"{DeviceClass.PRESSURE}_{Units.PRESSURE_HPA}",
-        device_class=SensorDeviceClass.PRESSURE,
-        native_unit_of_measurement=UnitOfPressure.HPA,
-        state_class=SensorStateClass.MEASUREMENT,
+    SokSensorEntityDescription(
+        key="num_cycles",
+        native_unit_of_measurement="cycles",
+        state_class=SensorStateClass.TOTAL_INCREASING,
+        value_fn=lambda dev: dev.num_cycles,
     ),
-}
-
-
-def _device_key_to_bluetooth_entity_key(
-    device_key: DeviceKey,
-) -> PassiveBluetoothEntityKey:
-    """Convert a device key to an entity key."""
-    return PassiveBluetoothEntityKey(device_key.key, device_key.device_id)
-
-
-def sensor_update_to_bluetooth_data_update(
-    sensor_update: SensorUpdate,
-) -> PassiveBluetoothDataUpdate:
-    """Convert a sensor update to a bluetooth data update."""
-    return PassiveBluetoothDataUpdate(
-        devices={
-            device_id: sensor_device_info_to_hass_device_info(device_info)
-            for device_id, device_info in sensor_update.devices.items()
-        },
-        entity_descriptions={
-            _device_key_to_bluetooth_entity_key(device_key): SENSOR_DESCRIPTIONS[
-                (description.device_class, description.native_unit_of_measurement)
-            ]
-            for device_key, description in sensor_update.entity_descriptions.items()
-            if description.device_class and description.native_unit_of_measurement
-        },
-        entity_data={
-            _device_key_to_bluetooth_entity_key(device_key): sensor_values.native_value
-            for device_key, sensor_values in sensor_update.entity_values.items()
-        },
-        entity_names={
-            _device_key_to_bluetooth_entity_key(device_key): sensor_values.name
-            for device_key, sensor_values in sensor_update.entity_values.items()
-        },
-    )
+)
 
 
 async def async_setup_entry(
@@ -112,24 +91,29 @@ async def async_setup_entry(
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Set up the SOK BLE sensors."""
-    processor = PassiveBluetoothDataProcessor(sensor_update_to_bluetooth_data_update)
-    entry.async_on_unload(
-        processor.async_add_entities_listener(
-            SOKBluetoothSensorEntity, async_add_entities
-        )
-    )
-    entry.async_on_unload(entry.runtime_data.async_register_processor(processor))
+    coordinator = entry.runtime_data
+    entities: list[SOKSensorEntity] = [
+        SOKSensorEntity(coordinator, description)
+        for description in SENSOR_DESCRIPTIONS
+    ]
+    async_add_entities(entities)
 
 
-class SOKBluetoothSensorEntity(
-    PassiveBluetoothProcessorEntity[
-        PassiveBluetoothDataProcessor[float | int | None, SensorUpdate]
-    ],
-    SensorEntity,
-):
-    """Representation of a sok ble sensor."""
+class SOKSensorEntity(CoordinatorEntity[SokBluetoothDevice], SensorEntity):
+    """Representation of a SOK BLE sensor."""
+
+    entity_description: SokSensorEntityDescription
+
+    def __init__(self, coordinator, description: SokSensorEntityDescription) -> None:
+        super().__init__(coordinator)
+        self.entity_description = description
+        self._attr_unique_id = f"{coordinator.address}_{description.key}"
+        self._attr_has_entity_name = True
 
     @property
     def native_value(self) -> int | float | None:
-        """Return the native value."""
-        return self.processor.entity_data.get(self.entity_key)
+        """Return the sensor value."""
+        device: SokBluetoothDevice = self.coordinator.data
+        if description := self.entity_description.value_fn:
+            return description(device)
+        return None

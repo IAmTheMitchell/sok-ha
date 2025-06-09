@@ -8,10 +8,9 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 
-from .const import CONF_DEVICE_DATA, CONF_DEVICE_TYPE
-from .coordinator import SOKActiveBluetoothProcessorCoordinator
+from .coordinator import SOKDataUpdateCoordinator
 
-SOKConfigEntry = ConfigEntry[SOKActiveBluetoothProcessorCoordinator]
+SOKConfigEntry = ConfigEntry[SOKDataUpdateCoordinator]
 
 PLATFORMS: list[Platform] = [Platform.SENSOR]
 
@@ -19,16 +18,10 @@ PLATFORMS: list[Platform] = [Platform.SENSOR]
 async def async_setup_entry(hass: HomeAssistant, entry: SOKConfigEntry) -> bool:
     """Set up SOK BLE device from a config entry."""
     assert entry.unique_id is not None
-    device_type: str | None = entry.data.get(CONF_DEVICE_TYPE)
-    device_data: dict[str, Any] | None = entry.data.get(CONF_DEVICE_DATA)
-    coordinator = SOKActiveBluetoothProcessorCoordinator(
-        hass, entry, device_type, device_data
-    )
-    await coordinator.async_init()
+    coordinator = SOKDataUpdateCoordinator(hass, entry)
+    await coordinator.async_config_entry_first_refresh()
     entry.runtime_data = coordinator
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-    # only start after all platforms have had a chance to subscribe
-    entry.async_on_unload(coordinator.async_start())
     return True
 
 

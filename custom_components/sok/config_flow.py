@@ -11,9 +11,8 @@ from homeassistant.components.bluetooth import (
 )
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.const import CONF_ADDRESS
-from sok_ble import SOKBluetoothDeviceData as DeviceData
 
-from .const import CONF_DEVICE_TYPE, DOMAIN
+from .const import DOMAIN
 
 
 class SOKConfigFlow(ConfigFlow, domain=DOMAIN):
@@ -24,8 +23,13 @@ class SOKConfigFlow(ConfigFlow, domain=DOMAIN):
     def __init__(self) -> None:
         """Initialize the config flow."""
         self._discovery_info: BluetoothServiceInfoBleak | None = None
-        self._discovered_device: DeviceData | None = None
-        self._discovered_devices: dict[str, tuple[str, str]] = {}
+        self._discovered_devices: dict[str, str] = {}
+
+    @staticmethod
+    def _device_supported(discovery_info: BluetoothServiceInfoBleak) -> bool:
+        """Return True if the discovered device looks like a SOK battery."""
+        name = discovery_info.name or ""
+        return name.startswith("SOK")
 
     async def async_step_bluetooth(
         self, discovery_info: BluetoothServiceInfoBleak
@@ -33,27 +37,20 @@ class SOKConfigFlow(ConfigFlow, domain=DOMAIN):
         """Handle the bluetooth discovery step."""
         await self.async_set_unique_id(discovery_info.address)
         self._abort_if_unique_id_configured()
-        device = DeviceData()
-        if not device.supported(discovery_info):
+        if not self._device_supported(discovery_info):
             return self.async_abort(reason="not_supported")
         self._discovery_info = discovery_info
-        self._discovered_device = device
         return await self.async_step_bluetooth_confirm()
 
     async def async_step_bluetooth_confirm(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Confirm discovery."""
-        assert self._discovered_device is not None
-        device = self._discovered_device
         assert self._discovery_info is not None
         discovery_info = self._discovery_info
-        title = device.title or device.get_device_name() or discovery_info.name
+        title = discovery_info.name or discovery_info.address
         if user_input is not None:
-            return self.async_create_entry(
-                title=title,
-                data={CONF_DEVICE_TYPE: str(self._discovered_device.device_type)},
-            )
+            return self.async_create_entry(title=title, data={})
 
         self._set_confirm_only()
         placeholders = {"name": title}
@@ -70,21 +67,17 @@ class SOKConfigFlow(ConfigFlow, domain=DOMAIN):
             address = user_input[CONF_ADDRESS]
             await self.async_set_unique_id(address, raise_on_progress=False)
             self._abort_if_unique_id_configured()
-            title, device_type = self._discovered_devices[address]
-            return self.async_create_entry(
-                title=title, data={CONF_DEVICE_TYPE: device_type}
-            )
+            title = self._discovered_devices[address]
+            return self.async_create_entry(title=title, data={})
 
         current_addresses = self._async_current_ids(include_ignore=False)
         for discovery_info in async_discovered_service_info(self.hass, False):
             address = discovery_info.address
             if address in current_addresses or address in self._discovered_devices:
                 continue
-            device = DeviceData()
-            if device.supported(discovery_info):
+            if self._device_supported(discovery_info):
                 self._discovered_devices[address] = (
-                    device.title or device.get_device_name() or discovery_info.name,
-                    str(device.device_type),
+                    discovery_info.name or address
                 )
 
         if not self._discovered_devices:
