@@ -1,6 +1,34 @@
 # CHANGELOG
 
 
+## v0.3.0 (2025-06-09)
+
+### Bug Fixes
+
+- Add explicit name for some entities
+  ([`945008c`](https://github.com/IAmTheMitchell/sok-ha/commit/945008c68d7fc9e7941792a7949d4358238933b8))
+
+- Add translation keys for all sensors
+  ([`b07a2a9`](https://github.com/IAmTheMitchell/sok-ha/commit/b07a2a9595a5fffc7a9d57b1f43e8d64a4690fdc))
+
+- Add translation keys for missing entity names
+  ([`fac9605`](https://github.com/IAmTheMitchell/sok-ha/commit/fac96057acc5c1514037a57b43b648ce1f40aaa0))
+
+- Add translation keys for sensors
+  ([`b630958`](https://github.com/IAmTheMitchell/sok-ha/commit/b6309580dedd3bf4da6ff81531cfdbd4da986388))
+
+- Assign icons to some entities
+  ([`a87b16e`](https://github.com/IAmTheMitchell/sok-ha/commit/a87b16e3f9c4e8d9bf6ea7486baf8a2fad4b54fa))
+
+- Update soc name to battery
+  ([`88e5024`](https://github.com/IAmTheMitchell/sok-ha/commit/88e50249bcb50f8fb581afa583e92cca245d3355))
+
+### Features
+
+- Remove device when entry deleted
+  ([`e0ebe22`](https://github.com/IAmTheMitchell/sok-ha/commit/e0ebe22a058a4fc467f372546e1defb06e9d9e17))
+
+
 ## v0.2.0 (2025-06-09)
 
 ### Features
