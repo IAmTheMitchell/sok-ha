@@ -42,6 +42,7 @@ class SokSensorEntityDescription(SensorEntityDescription):
 SENSOR_DESCRIPTIONS: tuple[SokSensorEntityDescription, ...] = (
     SokSensorEntityDescription(
         key="voltage",
+        translation_key="voltage",
         device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         state_class=SensorStateClass.MEASUREMENT,
@@ -49,6 +50,7 @@ SENSOR_DESCRIPTIONS: tuple[SokSensorEntityDescription, ...] = (
     ),
     SokSensorEntityDescription(
         key="current",
+        translation_key="current",
         device_class=SensorDeviceClass.CURRENT,
         native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -56,6 +58,7 @@ SENSOR_DESCRIPTIONS: tuple[SokSensorEntityDescription, ...] = (
     ),
     SokSensorEntityDescription(
         key="power",
+        translation_key="power",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
         state_class=SensorStateClass.MEASUREMENT,
@@ -63,6 +66,7 @@ SENSOR_DESCRIPTIONS: tuple[SokSensorEntityDescription, ...] = (
     ),
     SokSensorEntityDescription(
         key="soc",
+        translation_key="soc",
         device_class=SensorDeviceClass.BATTERY,
         native_unit_of_measurement=PERCENTAGE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -70,6 +74,7 @@ SENSOR_DESCRIPTIONS: tuple[SokSensorEntityDescription, ...] = (
     ),
     SokSensorEntityDescription(
         key="temperature",
+        translation_key="temperature",
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         state_class=SensorStateClass.MEASUREMENT,
@@ -77,12 +82,14 @@ SENSOR_DESCRIPTIONS: tuple[SokSensorEntityDescription, ...] = (
     ),
     SokSensorEntityDescription(
         key="capacity",
+        translation_key="capacity",
         native_unit_of_measurement="Ah",
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda dev: dev.capacity,
     ),
     SokSensorEntityDescription(
         key="num_cycles",
+        translation_key="num_cycles",
         native_unit_of_measurement="cycles",
         state_class=SensorStateClass.TOTAL_INCREASING,
         value_fn=lambda dev: dev.num_cycles,
