@@ -12,7 +12,7 @@ dependencies = [
     "pyserial>=3.5",
     "pytest>=8.4.0",
     "pytest-asyncio>=1.0.0",
-    "sok-ble>=0.1.1",
+    "sok-ble>=0.1.2",
 ]
 
 [tool.pytest.ini_options]
