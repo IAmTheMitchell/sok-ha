@@ -31,6 +31,8 @@ class SOKDataUpdateCoordinator(DataUpdateCoordinator[SokBluetoothDevice]):
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         self.entry = entry
         self.address = entry.unique_id
+        battery_name = getattr(entry, "title", entry.unique_id)
+        _LOGGER.debug("Initializing coordinator for SOK battery %s at %s", battery_name, self.address)
         super().__init__(
             hass,
             _LOGGER,
@@ -56,15 +58,20 @@ class SOKDataUpdateCoordinator(DataUpdateCoordinator[SokBluetoothDevice]):
 
     async def _async_update_data(self) -> SokBluetoothDevice:
         assert self.address is not None
+        battery_name = getattr(self.entry, "title", self.address)
+        _LOGGER.debug("Updating data for SOK battery %s", battery_name)
         ble_device = async_ble_device_from_address(
             self.hass, self.address, connectable=True
         )
         if not ble_device:
+            _LOGGER.debug("SOK battery %s (%s) not found", battery_name, self.address)
             raise UpdateFailed(f"Device {self.address} not found")
         device = SokBluetoothDevice(ble_device)
         try:
             await device.async_update()
         except Exception as err:
+            _LOGGER.debug("Error updating SOK battery %s: %s", battery_name, err)
             raise UpdateFailed(err) from err
         self.data = device
+        _LOGGER.debug("Finished updating SOK battery %s", battery_name)
         return device
