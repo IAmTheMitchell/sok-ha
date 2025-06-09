@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Callable, Any
+from typing import Callable
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -12,11 +12,11 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.const import (
-    UnitOfElectricPotential,
+    PERCENTAGE,
     UnitOfElectricCurrent,
+    UnitOfElectricPotential,
     UnitOfPower,
     UnitOfTemperature,
-    PERCENTAGE,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import (
@@ -25,7 +25,6 @@ from homeassistant.helpers.device_registry import (
 )
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-
 from sok_ble.sok_bluetooth_device import SokBluetoothDevice
 
 from . import SOKConfigEntry
@@ -77,12 +76,16 @@ SENSOR_DESCRIPTIONS: tuple[SokSensorEntityDescription, ...] = (
     ),
     SokSensorEntityDescription(
         key="capacity",
+        name="Capacity",
+        icon="mdi:battery-high",
         native_unit_of_measurement="Ah",
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda dev: dev.capacity,
     ),
     SokSensorEntityDescription(
         key="num_cycles",
+        name="Charge Cycles",
+        icon="mdi:battery-sync",
         native_unit_of_measurement="cycles",
         state_class=SensorStateClass.TOTAL_INCREASING,
         value_fn=lambda dev: dev.num_cycles,
@@ -98,8 +101,7 @@ async def async_setup_entry(
     """Set up the SOK BLE sensors."""
     coordinator = entry.runtime_data
     entities: list[SOKSensorEntity] = [
-        SOKSensorEntity(coordinator, description)
-        for description in SENSOR_DESCRIPTIONS
+        SOKSensorEntity(coordinator, description) for description in SENSOR_DESCRIPTIONS
     ]
     async_add_entities(entities)
 
