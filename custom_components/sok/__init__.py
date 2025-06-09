@@ -7,6 +7,9 @@ from typing import Any
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import device_registry as dr
+
+from .const import DOMAIN
 
 from .coordinator import SOKDataUpdateCoordinator
 
@@ -27,4 +30,22 @@ async def async_setup_entry(hass: HomeAssistant, entry: SOKConfigEntry) -> bool:
 
 async def async_unload_entry(hass: HomeAssistant, entry: SOKConfigEntry) -> bool:
     """Unload a config entry."""
-    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    if unload_ok:
+        coordinator: SOKDataUpdateCoordinator = entry.runtime_data
+        await coordinator.async_shutdown()
+        entry.runtime_data = None
+    return unload_ok
+
+
+async def async_remove_config_entry_device(
+    hass: HomeAssistant, entry: SOKConfigEntry, device_entry: dr.DeviceEntry
+) -> bool:
+    """Remove a config entry from a device."""
+    if any(
+        identifier == (DOMAIN, entry.unique_id) for identifier in device_entry.identifiers
+    ):
+        dev_reg = dr.async_get(hass)
+        dev_reg.async_remove_device(device_entry.id)
+        return True
+    return False
