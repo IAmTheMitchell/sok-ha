@@ -6,6 +6,7 @@ from typing import Any
 import logging
 
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
@@ -27,7 +28,18 @@ async def async_setup_entry(hass: HomeAssistant, entry: SOKConfigEntry) -> bool:
     battery_name = getattr(entry, "title", entry.unique_id)
     _LOGGER.debug("Setting up SOK battery %s", battery_name)
     coordinator = SOKDataUpdateCoordinator(hass, entry)
-    await coordinator.async_config_entry_first_refresh()
+
+    async def first_refresh() -> None:
+        try:
+            await coordinator.async_config_entry_first_refresh()
+        except ConfigEntryNotReady:
+            _LOGGER.debug(
+                "Initial refresh failed for %s, continuing setup", battery_name
+            )
+            await coordinator.async_refresh()
+
+    hass.async_create_task(first_refresh())
+
     entry.runtime_data = coordinator
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True

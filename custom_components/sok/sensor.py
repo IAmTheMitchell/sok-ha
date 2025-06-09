@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Callable
+import logging
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -25,6 +26,8 @@ from homeassistant.helpers.device_registry import (
 )
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+
+_LOGGER = logging.getLogger(__name__)
 from sok_ble.sok_bluetooth_device import SokBluetoothDevice
 
 from . import SOKConfigEntry
@@ -126,7 +129,12 @@ class SOKSensorEntity(CoordinatorEntity[SokBluetoothDevice], SensorEntity):
     @property
     def native_value(self) -> int | float | None:
         """Return the sensor value."""
-        device: SokBluetoothDevice = self.coordinator.data
+        device: SokBluetoothDevice | None = self.coordinator.data
+        if device is None:
+            return None
         if description := self.entity_description.value_fn:
-            return description(device)
+            try:
+                return description(device)
+            except AttributeError as err:  # pragma: no cover - defensive
+                _LOGGER.debug("Missing attribute for %s: %s", self.unique_id, err)
         return None
