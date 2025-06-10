@@ -70,7 +70,7 @@ class SOKDataUpdateCoordinator(DataUpdateCoordinator[SokBluetoothDevice]):
             _LOGGER.debug("SOK battery %s (%s) not found", battery_name, self.address)
             raise UpdateFailed(f"Device {self.address} not found")
         device = SokBluetoothDevice(ble_device)
-        last_err: Exception | None = None
+        last_err: BaseException | None = None
         for attempt in range(2):
             try:
                 _LOGGER.debug(
@@ -79,6 +79,16 @@ class SOKDataUpdateCoordinator(DataUpdateCoordinator[SokBluetoothDevice]):
                 async with timeout(REQUEST_TIMEOUT):
                     await device.async_update()
                 break
+            except asyncio.CancelledError as err:  # pragma: no cover - hardware errors
+                last_err = err
+                _LOGGER.debug(
+                    "Cancelled updating SOK battery %s on attempt %s: %s", 
+                    battery_name,
+                    attempt + 1,
+                    err,
+                    exc_info=err,
+                )
+                await asyncio.sleep(1)
             except Exception as err:  # pragma: no cover - hardware errors
                 last_err = err
                 _LOGGER.debug(
