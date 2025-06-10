@@ -1940,16 +1940,16 @@ wheels = [
 
 [[package]]
 name = "sok-ble"
-version = "0.1.3"
+version = "0.1.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "async-timeout" },
     { name = "bleak" },
     { name = "bleak-retry-connector" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c4/67/d9f2a97ef2cd11023719d7a531cff13df830f77db532de192739905ad396/sok_ble-0.1.3.tar.gz", hash = "sha256:8118be24c0e4447716a98035908c864acd9140129f0b7385930da45b16ff8d0b", size = 7696, upload-time = "2025-06-10T04:31:32.621Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f9/ba/d3cec8d9f5073f52851d114625ecc9c17214d68ef4948dd0834bfcc89e25/sok_ble-0.1.4.tar.gz", hash = "sha256:5ec8cabc48261ef540d4563c800afb1ce11c81657a8448ae677230a9b5be7010", size = 7696, upload-time = "2025-06-10T04:48:32.406Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/01/df/dc18b0ed8c9596bb8708a053c6c47816a1b40bb0dad170780d71cec11bf0/sok_ble-0.1.3-py3-none-any.whl", hash = "sha256:6898089d52c52958b46e6256ecffc688c989d262e0665b46871926d18f0c3187", size = 6256, upload-time = "2025-06-10T04:31:31.358Z" },
+    { url = "https://files.pythonhosted.org/packages/53/b9/405e8c2157dd12b71d67eba348cf1c1381d29f582a6100e8c9b9f3640aa6/sok_ble-0.1.4-py3-none-any.whl", hash = "sha256:8e74fbfdcdffcc25b8e558a779b7d91a658f24d4de2461dbc20198ae9921e874", size = 6252, upload-time = "2025-06-10T04:48:31.199Z" },
 ]
 
 [[package]]
