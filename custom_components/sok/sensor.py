@@ -93,6 +93,38 @@ SENSOR_DESCRIPTIONS: tuple[SokSensorEntityDescription, ...] = (
         state_class=SensorStateClass.TOTAL_INCREASING,
         value_fn=lambda dev: dev.num_cycles,
     ),
+    SokSensorEntityDescription(
+        key="cell_1_voltage",
+        name="Cell 1 Voltage",
+        device_class=SensorDeviceClass.VOLTAGE,
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda dev: dev.cell_voltages[0] if dev.cell_voltages else None,
+    ),
+    SokSensorEntityDescription(
+        key="cell_2_voltage",
+        name="Cell 2 Voltage",
+        device_class=SensorDeviceClass.VOLTAGE,
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda dev: dev.cell_voltages[1] if dev.cell_voltages else None,
+    ),
+    SokSensorEntityDescription(
+        key="cell_3_voltage",
+        name="Cell 3 Voltage",
+        device_class=SensorDeviceClass.VOLTAGE,
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda dev: dev.cell_voltages[2] if dev.cell_voltages else None,
+    ),
+    SokSensorEntityDescription(
+        key="cell_4_voltage",
+        name="Cell 4 Voltage",
+        device_class=SensorDeviceClass.VOLTAGE,
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda dev: dev.cell_voltages[3] if dev.cell_voltages else None,
+    ),
 )
 
 

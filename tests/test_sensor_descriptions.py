@@ -16,6 +16,7 @@ def test_sensor_descriptions_value():
         capacity=100.0,
         num_cycles=10,
         power=62.5,
+        cell_voltages=[3.3, 3.3, 3.3, 3.3],
     )
     coordinator = DummyCoordinator(device)
 
