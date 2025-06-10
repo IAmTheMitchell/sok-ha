@@ -1,6 +1,20 @@
 # CHANGELOG
 
 
+## v0.4.2 (2025-06-10)
+
+### Bug Fixes
+
+- Recover from cancelled BLE connections
+  ([`1891507`](https://github.com/IAmTheMitchell/sok-ha/commit/1891507b52dce71ee74e3db3498e65b6569f896e))
+
+- Upgrade sok-ble
+  ([`3e16730`](https://github.com/IAmTheMitchell/sok-ha/commit/3e167306aa4af685eb08a3cdfb0c445492cae210))
+
+- Upgrade sok-ble to v0.1.4
+  ([`abbe78e`](https://github.com/IAmTheMitchell/sok-ha/commit/abbe78e9b811dd6e13ef8abf0f71227cf70eb4cb))
+
+
 ## v0.4.1 (2025-06-09)
 
 ### Bug Fixes
