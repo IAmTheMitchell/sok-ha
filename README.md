@@ -1,8 +1,20 @@
 # SOK BLE Integration for Home Assistant
 
 This custom integration polls data from SOK batteries using Bluetooth Low Energy (BLE).
-It has been tested with SK12V100H batteries and should work with other SOK models
-that advertise as `SOK-AA`.
+
+## Currently Supported Devices
+Tested:
+- SK12V100H
+
+Should work, but untested:
+- SK12V100P
+- SK12V206H
+- SK12V206PH
+- SK12V280H
+- SK24V100
+- Any other SOK models that advertise as `SOK-AA` and use the V8 SOK BMS.
+
+(Please open a GitHub issue with your results if you test any of the untested battery models.)
 
 ## Features
 - Automatic discovery of SOK batteries
@@ -38,8 +50,15 @@ After installation:
 3. Follow the prompts to select your battery
 
 ## Troubleshooting
-- Ensure the battery is powered on and in Bluetooth range
+Infrequent disconnects are expected. The integration should recover in the next scanning interval. If data is missing for long periods of time or the integration fails to intialize, try these steps:
+- Ensure the battery is in Bluetooth range
+- Ensure the battery is charged and not in storage mode
 - Enable debug logging for the integration when reporting issues
+- Try connecting to the battery using a phone or tablet and the ABC-BMS app
+
+## Support
+- For bugs, please open an issue on GitHub
+- Include Home Assistant logs and your device model information
 
 ## License
 This project is licensed under the Apache License 2.0. See the `LICENSE` file for details.
