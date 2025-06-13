@@ -51,6 +51,7 @@ SENSOR_DESCRIPTIONS: tuple[SokSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=2,
         value_fn=lambda dev: dev.voltage,
     ),
     SokSensorEntityDescription(
@@ -103,6 +104,7 @@ SENSOR_DESCRIPTIONS: tuple[SokSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=2,
         value_fn=lambda dev: dev.cell_voltages[0] if dev.cell_voltages else None,
     ),
     SokSensorEntityDescription(
@@ -111,6 +113,7 @@ SENSOR_DESCRIPTIONS: tuple[SokSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=2,
         value_fn=lambda dev: dev.cell_voltages[1] if dev.cell_voltages else None,
     ),
     SokSensorEntityDescription(
@@ -119,6 +122,7 @@ SENSOR_DESCRIPTIONS: tuple[SokSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=2,
         value_fn=lambda dev: dev.cell_voltages[2] if dev.cell_voltages else None,
     ),
     SokSensorEntityDescription(
@@ -127,6 +131,7 @@ SENSOR_DESCRIPTIONS: tuple[SokSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=2,
         value_fn=lambda dev: dev.cell_voltages[3] if dev.cell_voltages else None,
     ),
 )
