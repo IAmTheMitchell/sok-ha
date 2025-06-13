@@ -1,6 +1,22 @@
 # CHANGELOG
 
 
+## v0.5.0 (2025-06-13)
+
+### Documentation
+
+- Add additional information
+  ([`91a531c`](https://github.com/IAmTheMitchell/sok-ha/commit/91a531c5c799f5105f67ba4799baf5ba591597bc))
+
+- Add integration readme
+  ([`bd72fbd`](https://github.com/IAmTheMitchell/sok-ha/commit/bd72fbddd67c87bad9f3fef29f61ae2e489db27d))
+
+### Features
+
+- Add energy sensors
+  ([`7b4989c`](https://github.com/IAmTheMitchell/sok-ha/commit/7b4989ca002f7fbe43043f187ffe338739461061))
+
+
 ## v0.4.2 (2025-06-10)
 
 ### Bug Fixes
