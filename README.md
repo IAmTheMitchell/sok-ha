@@ -1,3 +1,7 @@
+![CI](https://github.com/IAmTheMitchell/sok-ha/actions/workflows/ci.yml/badge.svg)
+![Hassfest](https://github.com/IAmTheMitchell/sok-ha/actions/workflows/hassfest.yml/badge.svg)
+![HACS](https://github.com/IAmTheMitchell/sok-ha/actions/workflows/validate.yml/badge.svg)
+
 # SOK BLE Integration for Home Assistant
 
 This custom integration polls data from SOK batteries using Bluetooth Low Energy (BLE).
