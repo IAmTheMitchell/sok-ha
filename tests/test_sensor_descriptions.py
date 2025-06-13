@@ -23,3 +23,17 @@ def test_sensor_descriptions_value():
     for desc in SENSOR_DESCRIPTIONS:
         # Each sensor description should return a value without error
         assert desc.value_fn(device) is not None
+
+
+def test_voltage_sensor_precision():
+    voltage_keys = {
+        "voltage",
+        "cell_1_voltage",
+        "cell_2_voltage",
+        "cell_3_voltage",
+        "cell_4_voltage",
+    }
+
+    for desc in SENSOR_DESCRIPTIONS:
+        if desc.key in voltage_keys:
+            assert desc.suggested_display_precision == 2
