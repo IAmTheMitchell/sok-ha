@@ -2,6 +2,8 @@
 
 This custom integration polls data from SOK batteries using Bluetooth Low Energy (BLE).
 
+![Example dashboard using data from the integration.](docs/images/dashboard.png)
+
 ## Currently Supported Devices
 Tested:
 - SK12V100H
