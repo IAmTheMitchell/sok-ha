@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.6.0 (2025-06-13)
+
+### Features
+
+- Set voltage precision
+  ([`ec5ced6`](https://github.com/IAmTheMitchell/sok-ha/commit/ec5ced6e8c7625f32acc9688daa50022d1255d0e))
+
+
 ## v0.5.0 (2025-06-13)
 
 ### Documentation
