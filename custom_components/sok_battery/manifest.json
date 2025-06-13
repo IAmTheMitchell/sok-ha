@@ -1,6 +1,6 @@
 {
-  "domain": "sok",
-  "name": "SOK",
+  "domain": "sok_battery",
+  "name": "SOK Battery",
   "bluetooth": [
     {
       "local_name": "SOK-AA"

@@ -1,3 +1,3 @@
 """Constants for the SOK Bluetooth integration."""
 
-DOMAIN = "sok"
+DOMAIN = "sok_battery"

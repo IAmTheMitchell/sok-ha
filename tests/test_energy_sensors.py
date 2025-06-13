@@ -3,7 +3,7 @@ from datetime import timedelta
 
 import pytest
 
-from custom_components.sok.sensor import SOKEnergySensor
+from custom_components.sok_battery.sensor import SOKEnergySensor
 from homeassistant.util import dt as dt_util
 
 

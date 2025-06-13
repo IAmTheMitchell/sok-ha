@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 
-from custom_components.sok.sensor import SENSOR_DESCRIPTIONS
+from custom_components.sok_battery.sensor import SENSOR_DESCRIPTIONS
 
 class DummyCoordinator:
     def __init__(self, device):

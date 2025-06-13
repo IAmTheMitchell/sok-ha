@@ -4,7 +4,7 @@ from types import SimpleNamespace
 import pytest
 from bleak.backends.device import BLEDevice
 
-from custom_components.sok.coordinator import SOKDataUpdateCoordinator
+from custom_components.sok_battery.coordinator import SOKDataUpdateCoordinator
 
 
 class DummyHass:
@@ -33,7 +33,7 @@ async def test_async_update(monkeypatch):
         self.cell_voltages = [3.3, 3.3, 3.3, 3.3]
 
     monkeypatch.setattr(
-        "custom_components.sok.coordinator.async_ble_device_from_address",
+        "custom_components.sok_battery.coordinator.async_ble_device_from_address",
         fake_ble_device_from_address,
     )
     monkeypatch.setattr(
