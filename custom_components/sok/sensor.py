@@ -18,8 +18,12 @@ from homeassistant.const import (
     UnitOfElectricPotential,
     UnitOfPower,
     UnitOfTemperature,
+    UnitOfEnergy,
 )
-from homeassistant.core import HomeAssistant
+from homeassistant.helpers.restore_state import RestoreEntity
+from homeassistant.util import dt as dt_util
+from datetime import datetime
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import (
     CONNECTION_BLUETOOTH,
     DeviceInfo,
@@ -135,9 +139,15 @@ async def async_setup_entry(
 ) -> None:
     """Set up the SOK BLE sensors."""
     coordinator = entry.runtime_data
-    entities: list[SOKSensorEntity] = [
+    entities: list[SensorEntity] = [
         SOKSensorEntity(coordinator, description) for description in SENSOR_DESCRIPTIONS
     ]
+    entities.extend(
+        [
+            SOKEnergySensor(coordinator, key="energy_in", name="Energy In", direction="in"),
+            SOKEnergySensor(coordinator, key="energy_out", name="Energy Out", direction="out"),
+        ]
+    )
     async_add_entities(entities)
 
 
@@ -170,3 +180,49 @@ class SOKSensorEntity(CoordinatorEntity[SokBluetoothDevice], SensorEntity):
             except AttributeError as err:  # pragma: no cover - defensive
                 _LOGGER.debug("Missing attribute for %s: %s", self.unique_id, err)
         return None
+
+
+class SOKEnergySensor(CoordinatorEntity[SokBluetoothDevice], SensorEntity, RestoreEntity):
+    """Sensor accumulating battery energy in or out."""
+
+    _attr_device_class = SensorDeviceClass.ENERGY
+    _attr_state_class = SensorStateClass.TOTAL_INCREASING
+    _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
+    _attr_has_entity_name = True
+
+    def __init__(self, coordinator, *, key: str, name: str, direction: str) -> None:
+        super().__init__(coordinator)
+        self._attr_unique_id = f"{coordinator.address}_{key}"
+        self._attr_name = name
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, coordinator.unique_id)},
+            connections={(CONNECTION_BLUETOOTH, coordinator.address)},
+            name=getattr(coordinator.entry, "title", coordinator.address),
+            manufacturer="SOK",
+        )
+        self._direction = direction
+        self._attr_native_value = 0.0
+        self._last_update: datetime | None = None
+
+    async def async_added_to_hass(self) -> None:
+        await super().async_added_to_hass()
+        if (state := await self.async_get_last_state()) is not None:
+            try:
+                self._attr_native_value = float(state.state)
+            except (ValueError, TypeError):
+                _LOGGER.debug("Invalid previous state for %s: %s", self.unique_id, state.state)
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        device: SokBluetoothDevice | None = self.coordinator.data
+        now = dt_util.utcnow()
+        if device and device.voltage is not None and device.current is not None and self._last_update:
+            delta = (now - self._last_update).total_seconds()
+            power = device.voltage * device.current
+            if self._direction == "in" and device.current > 0:
+                self._attr_native_value += power * delta / 3600 / 1000
+            elif self._direction == "out" and device.current < 0:
+                self._attr_native_value += -power * delta / 3600 / 1000
+        self._last_update = now
+        if self.hass is not None:
+            super()._handle_coordinator_update()
