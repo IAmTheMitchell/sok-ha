@@ -2,8 +2,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from custom_components.sok import async_remove_config_entry_device
-from custom_components.sok.const import DOMAIN
+from custom_components.sok_battery import async_remove_config_entry_device
+from custom_components.sok_battery.const import DOMAIN
 
 
 class DummyHass:
@@ -23,7 +23,9 @@ async def test_remove_config_entry_device(monkeypatch):
     hass = DummyHass()
     entry = SimpleNamespace(unique_id="00:11:22:33:44:55")
     registry = DummyRegistry()
-    monkeypatch.setattr("custom_components.sok.dr.async_get", lambda _: registry)
+    monkeypatch.setattr(
+        "custom_components.sok_battery.dr.async_get", lambda _: registry
+    )
     device = SimpleNamespace(
         id="device1", identifiers={(DOMAIN, "00:11:22:33:44:55")}
     )
