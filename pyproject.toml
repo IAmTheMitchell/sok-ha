@@ -1,7 +1,7 @@
 [project]
 name = "sok-ha"
 version = "0.6.0"
-description = "Add your description here"
+description = "Home Assistant integration for monitoring SOK devices via BLE"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
@@ -25,4 +25,4 @@ asyncio_default_fixture_loop_scope = "function"
 [tool.semantic_release]
 branch = "main"
 version_toml = ["pyproject.toml:project.version"]
-version_variables = ["custom_components/sok/manifest.json:version"]
+version_variables = ["custom_components/sok_battery/manifest.json:version"]
