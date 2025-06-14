@@ -1,6 +1,28 @@
 # CHANGELOG
 
 
+## v0.6.1 (2025-06-14)
+
+### Bug Fixes
+
+- Update dir name to match domain
+  ([`571b571`](https://github.com/IAmTheMitchell/sok-ha/commit/571b5713bf73fea245c14ae1fc988a09b81ecb47))
+
+- Update domain name (will allow for logos and icons to be populated)
+  ([`9a74646`](https://github.com/IAmTheMitchell/sok-ha/commit/9a746465c2c159a76f6d14dd2f8ec568423e5b9e))
+
+- Update path to manifest.json version
+  ([`6afd77a`](https://github.com/IAmTheMitchell/sok-ha/commit/6afd77a27d7fdc4d157994fbd0abc092468880a7))
+
+- Update tests for new integration domain
+  ([`09050d3`](https://github.com/IAmTheMitchell/sok-ha/commit/09050d3afb01c55888d071fb02feb26120421372))
+
+### Documentation
+
+- Add dashboard image to README
+  ([`394e4fa`](https://github.com/IAmTheMitchell/sok-ha/commit/394e4faa40c4a76d200ff1bef7ea09417b4b3132))
+
+
 ## v0.6.0 (2025-06-13)
 
 ### Features
