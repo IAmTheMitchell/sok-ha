@@ -1,3 +1,7 @@
+![CI](https://github.com/IAmTheMitchell/sok-ha/actions/workflows/ci.yml/badge.svg)
+![Hassfest](https://github.com/IAmTheMitchell/sok-ha/actions/workflows/hassfest.yml/badge.svg)
+![HACS](https://github.com/IAmTheMitchell/sok-ha/actions/workflows/validate.yml/badge.svg)
+
 # SOK BLE Integration for Home Assistant
 
 This custom integration polls data from SOK batteries using Bluetooth Low Energy (BLE).
@@ -35,10 +39,20 @@ Should work, but untested:
 
 ## Prerequisites
 - Home Assistant 2025.3 or newer
-- SOK battery with BLE module (tested with SK12V100H)
-- Bluetooth adapter available to Home Assistant
+- SOK battery with BLE module compatible with the ABC-BMS app (tested with SK12V100H)
+- Bluetooth radio available to Home Assistant (built-in radios may or may not work)
+
+## Hardware
+_Includes Amazon affiliate links which provide a small commission to support this project._
+- Supported [SOK Battery](https://amzn.to/44JXK6r) with Bluetooth BMS
+- Bluetooth radio for Home Assistant
+  - [ESP32 for Bluetooth proxy](https://amzn.to/4lSBHkV) (Recommended)
+  - [USB Bluetooth adapter](https://amzn.to/4lsxDrU)
+
 
 ## Installation
+[Installation walkthrough video](https://youtu.be/vmIwiQ0O7yM?si=UDCQHbHkgCKsjNgM)
+
 Install via [HACS](https://hacs.xyz/):
 1. Ensure HACS is installed
 2. Add this repository as a custom repository in HACS
