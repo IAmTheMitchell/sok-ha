@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from datetime import timedelta
-import asyncio
-from async_timeout import timeout
 
+from async_timeout import timeout
 from homeassistant.components.bluetooth import async_ble_device_from_address
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -18,8 +18,8 @@ from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
     UpdateFailed,
 )
-
 from sok_ble.sok_bluetooth_device import SokBluetoothDevice
+
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)

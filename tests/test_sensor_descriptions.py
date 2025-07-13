@@ -2,6 +2,7 @@ from types import SimpleNamespace
 
 from custom_components.sok_battery.sensor import SENSOR_DESCRIPTIONS
 
+
 class DummyCoordinator:
     def __init__(self, device):
         self.data = device

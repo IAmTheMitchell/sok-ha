@@ -1,10 +1,10 @@
-from types import SimpleNamespace
 from datetime import timedelta
+from types import SimpleNamespace
 
 import pytest
+from homeassistant.util import dt as dt_util
 
 from custom_components.sok_battery.sensor import SOKEnergySensor
-from homeassistant.util import dt as dt_util
 
 
 class DummyCoordinator:

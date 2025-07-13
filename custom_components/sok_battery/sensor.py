@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Callable
 import logging
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Callable
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -16,20 +17,19 @@ from homeassistant.const import (
     PERCENTAGE,
     UnitOfElectricCurrent,
     UnitOfElectricPotential,
+    UnitOfEnergy,
     UnitOfPower,
     UnitOfTemperature,
-    UnitOfEnergy,
 )
-from homeassistant.helpers.restore_state import RestoreEntity
-from homeassistant.util import dt as dt_util
-from datetime import datetime
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import (
     CONNECTION_BLUETOOTH,
     DeviceInfo,
 )
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
+from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.util import dt as dt_util
 
 _LOGGER = logging.getLogger(__name__)
 from sok_ble.sok_bluetooth_device import SokBluetoothDevice

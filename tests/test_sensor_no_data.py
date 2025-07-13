@@ -2,7 +2,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from custom_components.sok_battery.sensor import SOKSensorEntity, SENSOR_DESCRIPTIONS
+from custom_components.sok_battery.sensor import SENSOR_DESCRIPTIONS, SOKSensorEntity
+
 
 class DummyCoordinator:
     def __init__(self, data=None):

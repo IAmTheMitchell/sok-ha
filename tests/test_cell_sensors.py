@@ -1,4 +1,5 @@
 from types import SimpleNamespace
+
 from custom_components.sok_battery.sensor import SENSOR_DESCRIPTIONS
 
 
