@@ -4,6 +4,7 @@
 
 # Testing
 - Use pytest for Python testing
+- Ensure all code is formatted and linted with Ruff.
 
 # Commits
 - Use conventional commits for all changes 
