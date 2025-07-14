@@ -19,7 +19,7 @@ def test_sensor_descriptions_value():
         power=62.5,
         cell_voltages=[3.3, 3.3, 3.3, 3.3],
     )
-    coordinator = DummyCoordinator(device)
+    DummyCoordinator(device)
 
     for desc in SENSOR_DESCRIPTIONS:
         # Each sensor description should return a value without error
