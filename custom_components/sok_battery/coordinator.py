@@ -35,7 +35,11 @@ class SOKDataUpdateCoordinator(DataUpdateCoordinator[SokBluetoothDevice]):
         self.entry = entry
         self.address = entry.unique_id
         battery_name = getattr(entry, "title", entry.unique_id)
-        _LOGGER.debug("Initializing coordinator for SOK battery %s at %s", battery_name, self.address)
+        _LOGGER.debug(
+            "Initializing coordinator for SOK battery %s at %s",
+            battery_name,
+            self.address,
+        )
         super().__init__(
             hass,
             _LOGGER,
@@ -82,7 +86,7 @@ class SOKDataUpdateCoordinator(DataUpdateCoordinator[SokBluetoothDevice]):
             except asyncio.CancelledError as err:  # pragma: no cover - hardware errors
                 last_err = err
                 _LOGGER.debug(
-                    "Cancelled updating SOK battery %s on attempt %s: %s", 
+                    "Cancelled updating SOK battery %s on attempt %s: %s",
                     battery_name,
                     attempt + 1,
                     err,

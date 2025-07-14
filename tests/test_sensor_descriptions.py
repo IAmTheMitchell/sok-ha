@@ -8,6 +8,7 @@ class DummyCoordinator:
         self.data = device
         self.address = "00:11:22:33:44:55"
 
+
 def test_sensor_descriptions_value():
     device = SimpleNamespace(
         voltage=12.5,
@@ -19,8 +20,6 @@ def test_sensor_descriptions_value():
         power=62.5,
         cell_voltages=[3.3, 3.3, 3.3, 3.3],
     )
-    coordinator = DummyCoordinator(device)
-
     for desc in SENSOR_DESCRIPTIONS:
         # Each sensor description should return a value without error
         assert desc.value_fn(device) is not None
