@@ -35,7 +35,11 @@ class SOKDataUpdateCoordinator(DataUpdateCoordinator[SokBluetoothDevice]):
         self.entry = entry
         self.address = entry.unique_id
         battery_name = getattr(entry, "title", entry.unique_id)
-        _LOGGER.debug("Initializing coordinator for SOK battery %s at %s", battery_name, self.address)
+        _LOGGER.debug(
+            "Initializing coordinator for SOK battery %s at %s",
+            battery_name,
+            self.address,
+        )
         super().__init__(
             hass,
             _LOGGER,

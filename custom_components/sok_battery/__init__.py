@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
@@ -12,10 +11,9 @@ from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
 
 from .const import DOMAIN
+from .coordinator import SOKDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
-
-from .coordinator import SOKDataUpdateCoordinator
 
 SOKConfigEntry = ConfigEntry[SOKDataUpdateCoordinator]
 
@@ -62,7 +60,8 @@ async def async_remove_config_entry_device(
 ) -> bool:
     """Remove a config entry from a device."""
     if any(
-        identifier == (DOMAIN, entry.unique_id) for identifier in device_entry.identifiers
+        identifier == (DOMAIN, entry.unique_id)
+        for identifier in device_entry.identifiers
     ):
         dev_reg = dr.async_get(hass)
         dev_reg.async_remove_device(device_entry.id)
