@@ -1,6 +1,40 @@
 # CHANGELOG
 
 
+## v0.6.2 (2025-07-15)
+
+### Bug Fixes
+
+- Update sok-ble dependency to fix reconnect loop
+  ([`6981789`](https://github.com/IAmTheMitchell/sok-ha/commit/698178944024b22398c73eb4ab0ec2c2af90b9c8))
+
+### Chores
+
+- Update AI directives
+  ([`932a47a`](https://github.com/IAmTheMitchell/sok-ha/commit/932a47af1961e6e58cc89e0ba68f5f4014f47a99))
+
+### Continuous Integration
+
+- Add ruff
+  ([`e8f645e`](https://github.com/IAmTheMitchell/sok-ha/commit/e8f645eb7be1afbb4bec05b94bed3f793670a544))
+
+- Enable dependabot
+  ([`fa5cb78`](https://github.com/IAmTheMitchell/sok-ha/commit/fa5cb7896f4379727679aa9a365ec769a630ce3e))
+
+### Documentation
+
+- Add hardware, video, and CI links
+  ([`8e9d4e9`](https://github.com/IAmTheMitchell/sok-ha/commit/8e9d4e97b9c0795cd76eb950fb03aba885008825))
+
+### Refactoring
+
+- Fix ruff lint errors
+  ([`ad617fb`](https://github.com/IAmTheMitchell/sok-ha/commit/ad617fb1eabb6ad8d9c6ef4f4bf1e2c7681aa183))
+
+- Ruff autofixes
+  ([`3425f3e`](https://github.com/IAmTheMitchell/sok-ha/commit/3425f3ead186b6bf3f2f29dd879707bca7dbd097))
+
+
 ## v0.6.1 (2025-06-14)
 
 ### Bug Fixes
