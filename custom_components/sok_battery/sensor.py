@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Callable
 import logging
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Callable
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -16,26 +17,25 @@ from homeassistant.const import (
     PERCENTAGE,
     UnitOfElectricCurrent,
     UnitOfElectricPotential,
+    UnitOfEnergy,
     UnitOfPower,
     UnitOfTemperature,
-    UnitOfEnergy,
 )
-from homeassistant.helpers.restore_state import RestoreEntity
-from homeassistant.util import dt as dt_util
-from datetime import datetime
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import (
     CONNECTION_BLUETOOTH,
     DeviceInfo,
 )
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
+from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-
-_LOGGER = logging.getLogger(__name__)
+from homeassistant.util import dt as dt_util
 from sok_ble.sok_bluetooth_device import SokBluetoothDevice
 
 from . import SOKConfigEntry
 from .const import DOMAIN
+
+_LOGGER = logging.getLogger(__name__)
 
 
 @dataclass
@@ -149,8 +149,18 @@ async def async_setup_entry(
     ]
     entities.extend(
         [
-            SOKEnergySensor(coordinator, key="energy_in", name="Energy In", direction="in"),
-            SOKEnergySensor(coordinator, key="energy_out", name="Energy Out", direction="out"),
+            SOKEnergySensor(
+                coordinator,
+                key="energy_in",
+                name="Energy In",
+                direction="in",
+            ),
+            SOKEnergySensor(
+                coordinator,
+                key="energy_out",
+                name="Energy Out",
+                direction="out",
+            ),
         ]
     )
     async_add_entities(entities)
@@ -187,7 +197,11 @@ class SOKSensorEntity(CoordinatorEntity[SokBluetoothDevice], SensorEntity):
         return None
 
 
-class SOKEnergySensor(CoordinatorEntity[SokBluetoothDevice], SensorEntity, RestoreEntity):
+class SOKEnergySensor(
+    CoordinatorEntity[SokBluetoothDevice],
+    SensorEntity,
+    RestoreEntity,
+):
     """Sensor accumulating battery energy in or out."""
 
     _attr_device_class = SensorDeviceClass.ENERGY
@@ -215,13 +229,22 @@ class SOKEnergySensor(CoordinatorEntity[SokBluetoothDevice], SensorEntity, Resto
             try:
                 self._attr_native_value = float(state.state)
             except (ValueError, TypeError):
-                _LOGGER.debug("Invalid previous state for %s: %s", self.unique_id, state.state)
+                _LOGGER.debug(
+                    "Invalid previous state for %s: %s",
+                    self.unique_id,
+                    state.state,
+                )
 
     @callback
     def _handle_coordinator_update(self) -> None:
         device: SokBluetoothDevice | None = self.coordinator.data
         now = dt_util.utcnow()
-        if device and device.voltage is not None and device.current is not None and self._last_update:
+        if (
+            device
+            and device.voltage is not None
+            and device.current is not None
+            and self._last_update
+        ):
             delta = (now - self._last_update).total_seconds()
             power = device.voltage * device.current
             if self._direction == "in" and device.current > 0:
