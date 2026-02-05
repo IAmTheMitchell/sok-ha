@@ -5,14 +5,17 @@ description = "Home Assistant integration for monitoring SOK devices via BLE"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "aiousbwatcher>=1.1.1",
-    "bleak>=0.22.3",
-    "bleak-retry-connector>=3.10.0",
     "homeassistant>=2025.4.4",
-    "pyserial>=3.5",
+    "sok-ble>=0.1.6",
+]
+
+[dependency-groups]
+dev = [
+    "bleak>=0.22.3",
     "pytest>=8.4.0",
     "pytest-asyncio>=1.0.0",
-    "sok-ble>=0.1.6",
+    "ruff>=0.12.3",
+    "ty>=0.0.15",
 ]
 
 [tool.pytest.ini_options]
@@ -22,11 +25,6 @@ markers = [
 ]
 asyncio_default_fixture_loop_scope = "function"
 
-[tool.semantic_release]
-branch = "main"
-version_toml = ["pyproject.toml:project.version"]
-version_variables = ["custom_components/sok_battery/manifest.json:version"]
-
 [tool.ruff]
 line-length = 88
 target-version = "py311"
@@ -35,10 +33,4 @@ target-version = "py311"
 select = ["I", "E", "F"]  # I = isort, E = pycodestyle, F = pyflakes
 
 [tool.ruff.format]
-# Optional: Enable formatter mode (like `black`)
 quote-style = "double"
-
-[dependency-groups]
-dev = [
-    "ruff>=0.12.3",
-]
