@@ -34,6 +34,7 @@ from sok_ble.sok_bluetooth_device import SokBluetoothDevice
 
 from . import SOKConfigEntry
 from .const import DOMAIN
+from .coordinator import SOKDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -166,12 +167,16 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 
-class SOKSensorEntity(CoordinatorEntity[SokBluetoothDevice], SensorEntity):
+class SOKSensorEntity(CoordinatorEntity[SOKDataUpdateCoordinator], SensorEntity):
     """Representation of a SOK BLE sensor."""
 
     entity_description: SokSensorEntityDescription
 
-    def __init__(self, coordinator, description: SokSensorEntityDescription) -> None:
+    def __init__(
+        self,
+        coordinator: SOKDataUpdateCoordinator,
+        description: SokSensorEntityDescription,
+    ) -> None:
         super().__init__(coordinator)
         self.entity_description = description
         self._attr_unique_id = f"{coordinator.address}_{description.key}"
@@ -198,7 +203,7 @@ class SOKSensorEntity(CoordinatorEntity[SokBluetoothDevice], SensorEntity):
 
 
 class SOKEnergySensor(
-    CoordinatorEntity[SokBluetoothDevice],
+    CoordinatorEntity[SOKDataUpdateCoordinator],
     SensorEntity,
     RestoreEntity,
 ):
@@ -209,7 +214,14 @@ class SOKEnergySensor(
     _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
     _attr_has_entity_name = True
 
-    def __init__(self, coordinator, *, key: str, name: str, direction: str) -> None:
+    def __init__(
+        self,
+        coordinator: SOKDataUpdateCoordinator,
+        *,
+        key: str,
+        name: str,
+        direction: str,
+    ) -> None:
         super().__init__(coordinator)
         self._attr_unique_id = f"{coordinator.address}_{key}"
         self._attr_name = name
@@ -220,14 +232,16 @@ class SOKEnergySensor(
             manufacturer="SOK",
         )
         self._direction = direction
-        self._attr_native_value = 0.0
+        self._energy_kwh = 0.0
+        self._attr_native_value = self._energy_kwh
         self._last_update: datetime | None = None
 
     async def async_added_to_hass(self) -> None:
         await super().async_added_to_hass()
         if (state := await self.async_get_last_state()) is not None:
             try:
-                self._attr_native_value = float(state.state)
+                self._energy_kwh = float(state.state)
+                self._attr_native_value = self._energy_kwh
             except (ValueError, TypeError):
                 _LOGGER.debug(
                     "Invalid previous state for %s: %s",
@@ -248,9 +262,10 @@ class SOKEnergySensor(
             delta = (now - self._last_update).total_seconds()
             power = device.voltage * device.current
             if self._direction == "in" and device.current > 0:
-                self._attr_native_value += power * delta / 3600 / 1000
+                self._energy_kwh += power * delta / 3600 / 1000
             elif self._direction == "out" and device.current < 0:
-                self._attr_native_value += -power * delta / 3600 / 1000
+                self._energy_kwh += -power * delta / 3600 / 1000
+            self._attr_native_value = self._energy_kwh
         self._last_update = now
         if self.hass is not None:
             super()._handle_coordinator_update()

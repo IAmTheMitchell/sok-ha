@@ -1,9 +1,11 @@
 from datetime import timedelta
 from types import SimpleNamespace
+from typing import cast
 
 import pytest
 from homeassistant.util import dt as dt_util
 
+from custom_components.sok_battery.coordinator import SOKDataUpdateCoordinator
 from custom_components.sok_battery.sensor import SOKEnergySensor
 
 
@@ -18,7 +20,7 @@ class DummyCoordinator:
 def test_energy_in_sensor(monkeypatch):
     start = dt_util.utcnow()
     device = SimpleNamespace(voltage=12.0, current=5.0)
-    coordinator = DummyCoordinator(device)
+    coordinator = cast(SOKDataUpdateCoordinator, DummyCoordinator(device))
     sensor = SOKEnergySensor(
         coordinator,
         key="energy_in",
@@ -35,7 +37,7 @@ def test_energy_in_sensor(monkeypatch):
 def test_energy_out_sensor(monkeypatch):
     start = dt_util.utcnow()
     device = SimpleNamespace(voltage=12.0, current=-5.0)
-    coordinator = DummyCoordinator(device)
+    coordinator = cast(SOKDataUpdateCoordinator, DummyCoordinator(device))
     sensor = SOKEnergySensor(
         coordinator,
         key="energy_out",
