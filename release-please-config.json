@@ -11,7 +11,7 @@
       "extra-files": [
         {
           "type": "json",
-          "path": "custom_components/sok/manifest.json",
+          "path": "custom_components/sok_battery/manifest.json",
           "jsonpath": "$.version"
         }
       ]
