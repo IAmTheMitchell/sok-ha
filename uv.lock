@@ -2219,16 +2219,16 @@ wheels = [
 
 [[package]]
 name = "sok-ble"
-version = "0.1.6"
+version = "0.1.9b2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "async-timeout" },
     { name = "bleak" },
     { name = "bleak-retry-connector" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/5a/a5/90807d6078a94f827dbb88e2d925af1e0c112178deab565b0d8de02ad584/sok_ble-0.1.6.tar.gz", hash = "sha256:f94d5f7d46666869cb0211d30d406d809eccaffee350437c1cd3493ef20c6b10", size = 43355, upload-time = "2025-07-13T23:34:53.296Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/cb/b1/42379fc6efa9f7762b47a271f464fa214ec91d91b291a7d1335c6dd20f61/sok_ble-0.1.9b2.tar.gz", hash = "sha256:7fa895a3638f95d2a19c717c652448e0f7a710e9a00f734e0e85489e373e025e", size = 47719, upload-time = "2026-02-05T02:33:40.604Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/02/f7/b237cf38c38005f8b59f70971a1ce2be4ad481d3e9cadd06a2de2ac3319d/sok_ble-0.1.6-py3-none-any.whl", hash = "sha256:c7ccc2334604e6cafe3081545fa6e27414bbbacc412cd1732fe5ef8d952e6c6c", size = 10242, upload-time = "2025-07-13T23:34:52.217Z" },
+    { url = "https://files.pythonhosted.org/packages/87/69/1220abe85904b11cb8d8e7265999bc982d0c0dbe6e9b477c61a0b62cb288/sok_ble-0.1.9b2-py3-none-any.whl", hash = "sha256:6575faa5541a5be1f49c9e3a312990c00ded1a6fd2ff0f39c8bb68991c18efa9", size = 10453, upload-time = "2026-02-05T02:33:41.828Z" },
 ]
 
 [[package]]
@@ -2255,7 +2255,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "homeassistant", specifier = ">=2025.4.4" },
-    { name = "sok-ble", specifier = ">=0.1.6" },
+    { name = "sok-ble", specifier = ">=0.1.9a5" },
 ]
 
 [package.metadata.requires-dev]
