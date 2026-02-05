@@ -2,16 +2,18 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 
 import voluptuous as vol
 from homeassistant.components.bluetooth import BluetoothServiceInfoBleak
 
 try:  # Home Assistant 2025.3+
     from homeassistant.components.bluetooth import async_discovered_service_info
+
     _ASYNC_DISCOVERY = "service_info"
 except ImportError:  # pragma: no cover - older Home Assistant versions
     from homeassistant.components.bluetooth import async_scanner_devices_by_address
+
     _ASYNC_DISCOVERY = "device"
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.const import CONF_ADDRESS
@@ -78,15 +80,17 @@ class SOKConfigFlow(ConfigFlow, domain=DOMAIN):
         if _ASYNC_DISCOVERY == "service_info":
             discoveries = async_discovered_service_info(self.hass, False)
         else:
-            discoveries = async_scanner_devices_by_address(self.hass).values()
+            legacy_discoveries = cast(Any, async_scanner_devices_by_address)(self.hass)
+            if isinstance(legacy_discoveries, dict):
+                discoveries = legacy_discoveries.values()
+            else:
+                discoveries = legacy_discoveries
         for discovery_info in discoveries:
             address = discovery_info.address
             if address in current_addresses or address in self._discovered_devices:
                 continue
             if self._device_supported(discovery_info):
-                self._discovered_devices[address] = (
-                    discovery_info.name or address
-                )
+                self._discovered_devices[address] = discovery_info.name or address
 
         if not self._discovered_devices:
             return self.async_abort(reason="no_devices_found")

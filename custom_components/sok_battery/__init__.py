@@ -51,7 +51,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: SOKConfigEntry) -> bool
     if unload_ok:
         coordinator: SOKDataUpdateCoordinator = entry.runtime_data
         await coordinator.async_shutdown()
-        entry.runtime_data = None
     return unload_ok
 
 

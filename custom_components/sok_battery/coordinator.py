@@ -33,8 +33,9 @@ class SOKDataUpdateCoordinator(DataUpdateCoordinator[SokBluetoothDevice]):
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         self.entry = entry
+        assert entry.unique_id is not None
         self.address = entry.unique_id
-        battery_name = getattr(entry, "title", entry.unique_id)
+        battery_name = getattr(entry, "title", self.address)
         _LOGGER.debug(
             "Initializing coordinator for SOK battery %s at %s",
             battery_name,
@@ -51,7 +52,7 @@ class SOKDataUpdateCoordinator(DataUpdateCoordinator[SokBluetoothDevice]):
     @property
     def unique_id(self) -> str:
         """Return a unique id for this coordinator."""
-        return self.entry.unique_id or getattr(self.entry, "entry_id", self.address)
+        return self.address
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -86,7 +87,7 @@ class SOKDataUpdateCoordinator(DataUpdateCoordinator[SokBluetoothDevice]):
             except asyncio.CancelledError as err:  # pragma: no cover - hardware errors
                 last_err = err
                 _LOGGER.debug(
-                    "Cancelled updating SOK battery %s on attempt %s: %s", 
+                    "Cancelled updating SOK battery %s on attempt %s: %s",
                     battery_name,
                     attempt + 1,
                     err,

@@ -1,8 +1,11 @@
 import asyncio
 from types import SimpleNamespace
+from typing import cast
 
 import pytest
 from bleak.backends.device import BLEDevice
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
 
 from custom_components.sok_battery.coordinator import SOKDataUpdateCoordinator
 
@@ -14,8 +17,8 @@ class DummyHass:
 
 @pytest.mark.asyncio
 async def test_async_update(monkeypatch):
-    hass = DummyHass()
-    entry = SimpleNamespace(unique_id="00:11:22:33:44:55")
+    hass = cast(HomeAssistant, DummyHass())
+    entry = cast(ConfigEntry, SimpleNamespace(unique_id="00:11:22:33:44:55"))
     coordinator = SOKDataUpdateCoordinator(hass, entry)
 
     device = BLEDevice("00:11:22:33:44:55", "SOK-AA", None, -60)
@@ -42,5 +45,6 @@ async def test_async_update(monkeypatch):
     )
 
     device_obj = await coordinator._async_update_data()
+    assert coordinator.data is not None
     assert device_obj.voltage == 12.5
     assert coordinator.data.voltage == 12.5
