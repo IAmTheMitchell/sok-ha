@@ -1,6 +1,20 @@
 # CHANGELOG
 
 
+## [1.0.1](https://github.com/IAmTheMitchell/sok-ha/compare/v1.0.0...v1.0.1) (2026-02-11)
+
+
+### Bug Fixes
+
+* handle client disconnection on connection errors ([e79005e](https://github.com/IAmTheMitchell/sok-ha/commit/e79005e8aa2f4daad276f0efd29e1949a8e96f38))
+* update sok-ble version and dependencies in manifest and pyproject files ([e311296](https://github.com/IAmTheMitchell/sok-ha/commit/e311296bf7ed69d6ddcda152ab79f1ad4dbda097))
+
+
+### Documentation
+
+* update AI directives ([44a9e39](https://github.com/IAmTheMitchell/sok-ha/commit/44a9e39cab81a005e4edba00e12417656c3632c2))
+* update workflow badges ([1739af8](https://github.com/IAmTheMitchell/sok-ha/commit/1739af8175431434ff80f1aa20525d68e61a0f9e))
+
 ## v0.6.2 (2025-07-15)
 
 ### Bug Fixes
