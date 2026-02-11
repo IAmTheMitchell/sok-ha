@@ -21,7 +21,7 @@ async def test_async_update(monkeypatch):
     entry = cast(ConfigEntry, SimpleNamespace(unique_id="00:11:22:33:44:55"))
     coordinator = SOKDataUpdateCoordinator(hass, entry)
 
-    device = BLEDevice("00:11:22:33:44:55", "SOK-AA", None, -60)
+    device = BLEDevice("00:11:22:33:44:55", "SOK-AA", None)
 
     def fake_ble_device_from_address(hass, address, connectable=True):
         return device
