@@ -11,7 +11,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "aiousbwatcher>=1.1.1",
+    "aiousbwatcher>=1.1.2",
     "bleak>=0.22.3",
     "pyserial>=3.5",
     "pytest>=8.4.0",
